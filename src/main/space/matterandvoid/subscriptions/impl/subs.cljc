@@ -335,6 +335,8 @@
 ;=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 (defn make-layer2-sub-fn*
+  "Creates a subscription function that returns a Reagent Cursor instead of a Reagent Reaction. Only supports the path
+  style of "
   [get-input-db-signal sub-name path]
   (fn layer2-sub-fn
     ([datasource]
@@ -350,7 +352,8 @@
        (assert (vector? path')
          (str "Layer 2 subscription \"" sub-name "\" must return a vector path." " Got: " (pr-str path')))
        ;; There might be edge cases where it is desired to have nil as part of the path, but for now I'll leave this in.
-       (assert (every? some? path') (str "Layer2 subscription cursor path contains nils: " (pr-str sub-name) " path: " (pr-str path')))
+       ;; edit: This will no longer cause serious caching bugs, leaving in case I want to turn into a log/warn later.
+       ;; (assert (every? some? path') (str "Layer2 subscription cursor path contains nils: " (pr-str sub-name) " path: " (pr-str path')))
        (ratom/cursor db-ratom path')))))
 
 (defn make-layer2-sub-fn
